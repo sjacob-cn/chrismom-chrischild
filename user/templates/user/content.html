@@ -1,0 +1,40 @@
+<center><h1>Conde Nast</h1></center>
+<center><strong>ChrisMomChrisChild</strong></center>
+<title>Game</title>
+{% if user.is_child_assigned %}
+Your Random Child is
+{% for each in u %}
+{% if each.id == user.child_id %}
+<strong>{{each.username}}</strong>
+{% endif %}
+{% endfor %}
+<br>
+Project Team 
+{% for each in UserProfile %}
+{% if each.id == user.child_id %}
+<strong>{{each.team_name}}</strong>
+{% endif %}
+{% endfor %}
+
+{% else %}
+<center><h1>Available Children</h1></center>
+<ol>
+  
+{% for each in q %}
+{% if each.is_child_assigned == False %}
+<center><li>{% for name in u%}
+    
+    {% if name.id == each.id %}
+    {{name.username}}
+    {% endif %}
+    {% endfor %}
+</li></center>
+{% endif %}
+{% endfor %}
+
+</ol>
+<form action ={% url 'allocateChild' user.id %} method='POST'>
+   
+    <input type="submit" value='Get Random Child'>
+</form>
+{% endif %}
