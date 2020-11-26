@@ -20,7 +20,8 @@ from user.views import dashboard,content,allocateChild
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include("user.urls")),
-    path("dashboard/", dashboard, name="dashboard"),
+    path("", dashboard, name="dashboard"),
+    path("accounts/", include("django.contrib.auth.urls")),
     path('<int:id>/content/',content,name='content'),
     path('<int:id>/allocateChild/',allocateChild,name='allocateChild'),
     

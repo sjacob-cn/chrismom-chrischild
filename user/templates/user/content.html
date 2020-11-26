@@ -3,11 +3,13 @@
 <title>Game</title>
 {% if user.is_child_assigned %}
 Your Random Child is
+
 {% for each in u %}
 {% if each.id == user.child_id %}
 <strong>{{each.username}}</strong>
 {% endif %}
 {% endfor %}
+
 <br>
 Project Team 
 {% for each in UserProfile %}
@@ -33,8 +35,9 @@ Project Team
 {% endfor %}
 
 </ol>
-<form action ={% url 'allocateChild' user.id %} method='POST'>
-   
+{% csrf_token %} 
+<form action ={% url 'allocateChild' user.id %} method='GET'>
+    {% csrf_token %} 
     <input type="submit" value='Get Random Child'>
 </form>
 {% endif %}
