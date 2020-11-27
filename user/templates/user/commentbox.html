@@ -1,0 +1,58 @@
+<head>{% load staticfiles%}
+    <link rel="stylesheet" href="{% static 'user/design.css' %}" ></head>
+<div class="container bootstrap snippets bootdey">
+    <div class="row">
+		<div class="col-md-12">
+		    <div class="blog-comment">
+				<h3 class="text-success">Comments</h3>
+                <hr/>
+                <i class="pull-right">{% csrf_token %} <form method='POST' action={% url 'comment' %}> {% csrf_token %} <label><strong>Add Your Comments</strong></label><input type='textarea' name='comment' required/>
+                  
+                  <select name="user" id="cars" required>
+                    <option value="{{user.username}}">{{user.username}}</option>
+                    <option value="Anonymous">Anonymous</option>
+                  </select>
+                  <input type='submit' value='Post' /></form></i>
+                {% for comment in comments %}
+				<ul class="comments">
+				<li class="clearfix">
+         
+				  <img src="https://bootdey.com/img/Content/user_3.jpg" class="avatar" alt="" >
+				  <div class="post-comments">
+				      <p class="meta">{{comment.created_at}}<a href="#">{{comment.sender}}</a> says : &nbsp;</p>
+           
+<body>
+				      <p>
+                
+				          {{comment.comment}}
+              </p>
+              <i class="pull-right">{% csrf_token %} <form method='POST' action={% url 'reply' comment.id %}> {% csrf_token %} <input type='text' name='reply' required/><input type='submit' value='reply' /></form></i>
+				  </div>
+        </li>
+				{% for reply in comment.reply_set.all %}
+        
+        <ul class="comments">
+          <li class="clearfix">
+              <img src="https://bootdey.com/img/Content/user_3.jpg" class="avatar" alt="">
+              <div class="post-comments">
+                  <p class="meta">{{reply.created_at}}<a href="#">Anonymous</a> says : </p>
+                  <p>
+                      {{reply.comments}}
+                  </p>
+              </div>
+          </li>
+      </ul>
+      {% endfor %}</ul>
+        
+        {% endfor %}
+        
+       
+			</div>
+		</div>
+	</div>
+</div>
+
+  
+
+
+</body>

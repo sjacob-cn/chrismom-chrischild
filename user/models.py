@@ -24,9 +24,9 @@ class Comment(models.Model):
     comment=models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    sender=models.CharField(max_length=100,default='Anonymous')
     def __str__(self):
-        return self.comment
+        return str(self.user)
 
 class Reply(models.Model):
     user = models.ForeignKey( settings.AUTH_USER_MODEL, null = False, on_delete=models.CASCADE)
@@ -36,4 +36,4 @@ class Reply(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.comment
+        return str(self.user)

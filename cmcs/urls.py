@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url,include
 from django.urls import path,include
-from user.views import dashboard,content,allocateChild
+from user.views import dashboard,content,allocateChild,chat,reply,comment
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include("user.urls")),
@@ -24,5 +25,14 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path('<int:id>/content/',content,name='content'),
     path('<int:id>/allocateChild/',allocateChild,name='allocateChild'),
+    path('chat/',chat,name='chat'),
+    path('<int:id>/chat/',reply,name='reply'),
+    path('chat.../',comment,name='comment'),
+    
+    
+
+   
+    
+    
     
 ]
