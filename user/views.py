@@ -5,8 +5,17 @@ from django.contrib.auth.decorators import login_required
 from .models import UserProfile,Comment,Reply
 from django.contrib.auth.models import User
 from django.urls import reverse
+from .forms import ContactForm
 import random
-
+import string
+from django.core.mail import send_mail, BadHeaderError
+import smtplib,ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+import secrets
+from django.contrib.auth import authenticate
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def dashboard(request):
@@ -70,8 +79,8 @@ def is_freeChild(child_id,id):
 @login_required(login_url='/accounts/login/')
 def chat(request):
     # user=UserProfile.objects.get(id=95)
-    
-    return render(request,'user/commentbox.html',{'comments':Comment.objects.all()})
+    u = User.objects.all()
+    return render(request,'user/commentbox.html',{'comments':Comment.objects.all(),'u':u})
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def reply(request,id):
@@ -91,18 +100,69 @@ def comment(request):
     print('welcome')
     
     
-    sender=str(request.POST.get('user'))
-    print(sender)
+    receiver=int(request.POST.get('menu'))
+    print(receiver)
     text=request.POST.get('comment')
     if text !="" and  text.split()!=[]:
-        if sender != 'anonymous':
-            com=Comment(user=User.objects.get(id=int(request.user.id)),comment=request.POST.get('comment'),sender=sender)
-        else:
-            com=Comment(user=User.objects.get(id=int(request.user.id)),comment=request.POST.get('comment'))
+        
+        com=Comment(user=User.objects.get(id=int(request.user.id)),comment=request.POST.get('comment'),receiver=receiver)
 
         com.save()
         print('saved')
     return HttpResponseRedirect(reverse('chat'))
 
+def passwordreset(request):
+    if request.method == 'GET':
+        form = ContactForm()
+        
+    else:
 
+        form = ContactForm(request.POST)
+        
+        if form.is_valid():
+            
+            from_email = form.cleaned_data['from_email']
+            #Object creation for User Table 
+            a = User.objects.filter(email=from_email).first()
+            
+           
+            if a != None:
+                
+                user_id = a.id
+                #Object creation for UserProfile Table
+                c = UserProfile.objects.get(user_id = user_id)
+                c.is_password_reset = False
+                c.save()
+                N = 7 #size of the random string
 
+                #random password generation
+                rand = ''.join(random.choices(string.ascii_uppercase + string.digits, k = N))
+
+                #Object creation for User Table
+                d = User.objects.get(id = user_id)
+
+                new_password = 'Christmas'+rand
+                d.set_password(new_password)
+                d.save()
+                
+                
+                #Sending email for password reset
+                try:
+                    message = "Hi " + d.username +"\n \nYou are receiving this email because you requested a password reset for your Condenast Christmas Account ("+ d.email +"). \nPlease login your account with the password: "+ new_password +"\n \nNote: Please change your password after login.\n \nHave a nice day!! \n \n \nRegards \nCondeNast Christmas Team"
+                    send_mail('Conde Christmas | Password Reset' , message , 'Condenast Christmas Event' , [from_email])
+                except BadHeaderError:
+                    return HttpResponse('Invalid header found.')
+                return redirect('password_reset_done')    
+        
+    
+    return render(request, "registration/passwordreset.html", {'form': form})
+
+def viewTasks(request):
+
+    comments=Comment.objects.filter(receiver=request.user.id)
+    tasks='<ol>'
+
+    for comment in comments:
+        tasks+="<center><li>"+comment.comment+"</li></center>"
+    tasks+='</ol>'
+    return HttpResponse(tasks)

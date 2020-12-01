@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url,include
 from django.urls import path,include
-from user.views import dashboard,content,allocateChild,chat,reply,comment
+from user.views import dashboard,content,allocateChild,chat,reply,comment,passwordreset,viewTasks
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +28,9 @@ urlpatterns = [
     path('chat/',chat,name='chat'),
     path('<int:id>/chat/',reply,name='reply'),
     path('chat.../',comment,name='comment'),
+    path('display/',viewTasks,name='tasks'),
+    
+    path('accounts/reset-password/', passwordreset, name='contact')
     
     
 

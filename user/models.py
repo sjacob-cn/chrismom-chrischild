@@ -14,6 +14,7 @@ class UserProfile(models.Model):
     is_child_assigned = models.BooleanField(default = False)
     created_at = models.DateTimeField(auto_now_add=True) 
     updated_at = models.DateTimeField(auto_now=True)
+    
 
     def __str__(self):
         return str(self.user)
@@ -24,7 +25,7 @@ class Comment(models.Model):
     comment=models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    sender=models.CharField(max_length=100,default='Anonymous')
+    receiver=models.IntegerField(null=True)
     def __str__(self):
         return str(self.user)
 

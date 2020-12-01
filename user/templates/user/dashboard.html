@@ -1,52 +1,147 @@
 
 {% extends "user/base.html" %}
 {% block content %}
-Hello, {{ user.first_name|default:'Guest' }}!
+<head>
+<style>
+    img {
+  border-radius: 50%;
+}
+aside {
+  width: 50%;
+  padding-left: 50px;
+  margin-left: 1px;
+  float: right;
+  font-style: italic;
+  
+}
+* {
+      box-sizing: border-box;
+   }
+   body {
+      color: #000;
+      
+      /* background-image: linear-gradient(135deg, #8BC6EC 0%, #9599E2 100%); */
+      text-align: center;
+   }
+   header {
+      background-color: #000;
+      padding: 20px;
+      text-align: center;
+      color: white;
+   }
+   nav {
+      float: left;
+      width: 20%;
+      height: 200px;
+      
+      padding: 60px 10px;
+   }
+   nav ul {
+      list-style-type: none;
+      padding: 0;
+   }
+   nav ul li a {
+      text-decoration: none;
+      
+   }
+   article {
+      float: left;
+      padding: 80px 10px;
+      width: 80%;
+      
+      height: 200px;
+      text-align: center;
+   }
+   section:after {
+      content: "";
+      display: table;
+      clear: both;
+   }
+   footer {
+      
+      padding: 20px;
+      text-align: center;
+      
+   }
+</style>
+    
+</head>
 
-<center><div>
+
+<header>Hello, {{ user.first_name|default:'Guest' }}!
+    <a href="{% url 'logout' %}">LogOut</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'password_change' %}">Change Password</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'chat' %}">Chat</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="{% url 'tasks' %}">My Tasks</a>
+</header>
+
     {% if user.is_authenticated %}
-       
-        <a href="{% url 'logout' %}">Logout</a>
-        <a href="{% url 'password_change' %}">Change password</a>
-        <a href="{% url 'chat' %}">Comment Section</a>
-
-        
-        
-        
         <title>Game</title>
         <br><br><br>
-            {% if userprofile.is_child_assigned %}
-                Your Random Child is
 
-                {% for each in u %}
-                    {% if each.id == userprofile.child_id %}
-                        <strong>{{each.first_name}}</strong>
-                        {% load staticfiles%}
-                        <img src="{% static 'user/'|add:each.first_name|add:'.jpg' %}" >
-                    {% endif %}
-                {% endfor %}
+    {% if userprofile.is_child_assigned %}
+    <section>
+        <nav>
+        
+        
+    <p style="float: center">Your Random Child is</p>
 
-                <br>
-                Project Team 
-                {% for each in UserProfile %}
-                    {% if each.id == userprofile.child_id %}
-                        <strong>{{each.team_name}}</strong>
-                        
-                    {% endif %}
-                {% endfor %}
-
-            {% else %}
+    {% for each in u %}
+        {% if each.id == userprofile.child_id %}
+            <strong>{{each.first_name}}</strong>
+        
+            {% load staticfiles%}
+   
+                   <img src="{% static 'user/'|add:each.first_name|add:'.jpg' %}" width="150" height="150" style="float: left">
                 
-            {% csrf_token %} 
-            <form action ={% url 'allocateChild' user.id %} method='GET'>
-            {% csrf_token %} 
-            <input type="submit" value='Get Random Child'>
-            </form>
-            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+
+    <br>
+    <br>
+    
+    {% for each in UserProfile %}
+        {% if each.id == userprofile.child_id %}
+            <strong>{{each.team_name}}</strong>
+            
+        {% endif %}
+    {% endfor %}
+
     {% else %}
-        <a href="{% url 'login' %}">Login</a>
-    {% endif %}
-</div>
-</center>
-{% endblock %}
+    
+{% csrf_token %} 
+<form action ={% url 'allocateChild' user.id %} method='GET'>
+{% csrf_token %} 
+<input type="submit" value='Get Random Child'>
+</form>
+{% endif %}
+</nav>
+<article>
+    
+    {% load staticfiles%}
+    <img src="{% static 'user/cmcs.jpg' %}" width="250" height="250" >
+    <p>It is an amusing game where Chris Child would find out who his/her Chris Mom is and do the tasks assigned by the Mom.
+
+    The name of all the participants will be written on a different piece of paper and would be mixed up. Each one of them would be asked to pick up one. The person who took the paper is the Chris Mom for the person, whose name was written on the piece of paper taken. Till the end, no one would disclose the name they got. From the following day, it’s the duty of Chris Mom to take care of the Chris Child, either by giving tasks or by sharing gifts. Sometimes, the tasks would be funny and it will make the game quite hilarious. 
+    
+    This game would be played for a few days until Christmas Eve. And in the end, the suspense would be broken to the child by announcing who the Mom is. After disclosing the secret, the Chris Mom would give the Chris Child a memorable gift.
+</p></article>
+</section>
+         
+
+{% else %}
+<a href="{% url 'login' %}">Login</a>
+{% endif %}
+    
+
+
+
+
+
+  
+   
+   
+  
+  {% endblock %}
 
