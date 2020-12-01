@@ -16,27 +16,30 @@ from email.mime.base import MIMEBase
 from email import encoders
 import secrets
 from django.contrib.auth import authenticate
+
+
+
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def dashboard(request):
     user_id = request.user.id
    
-    b = UserProfile.objects.get(id= user_id)
+    profile = UserProfile.objects.get(id= user_id)
     
-    if b.is_password_reset == False :
-        b.is_password_reset = True
-        b.save()
+    if profile.is_password_reset == False :
+        profile.is_password_reset = True
+        profile.save()
         return redirect('password_change')
 
-    if request.user.id:
-        print(request.user.id)
-        userprofile=UserProfile.objects.get(id=request.user.id)
-        u = User.objects.all()
-        q=UserProfile.objects.all()
-        obj={'userprofile':userprofile,'u':u,'q':q,'UserProfile':UserProfile.objects.all()}
-        return render(request, "user/dashboard.html",obj)
+    if user_id:
+        #logging in
+        userprofile=UserProfile.objects.get(id=user_id)
+        users = User.objects.all()
+        profiles=UserProfile.objects.all()
+        objects={'userprofile':userprofile,'u':users,'q':profiles,'UserProfile':UserProfile.objects.all()}
+        return render(request, "user/dashboard.html",objects)
     else:
-        print('logging out')
+        #logging out
         return render(request, "user/dashboard.html")
     
     
@@ -45,13 +48,12 @@ def dashboard(request):
 @login_required(login_url='/accounts/login/')
 def content(request,id):
     user=UserProfile.objects.get(id=id)
-    u = User.objects.all()
-    q=UserProfile.objects.all()
-    obj={'user':user,'u':u,'q':q,'UserProfile':UserProfile.objects.all()}
-    return render(request,'user/content.html',obj)
+    users = User.objects.all()
+    profiles=UserProfile.objects.all()
+    objects={'user':user,'u':users,'q':profiles,'UserProfile':UserProfile.objects.all()}
+    return render(request,'user/content.html',objects)
 
 @csrf_exempt
-
 def allocateChild(request,id):
     child_id=random.randrange(95,176,)
     if is_freeChild(child_id,id):
@@ -75,40 +77,35 @@ def is_freeChild(child_id,id):
     if child.parent_id:
         return False
     return True
+
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def chat(request):
-    # user=UserProfile.objects.get(id=95)
-    u = User.objects.all()
-    return render(request,'user/commentbox.html',{'comments':Comment.objects.all(),'u':u})
+    
+    users = User.objects.all()
+    return render(request,'user/commentbox.html',{'comments':Comment.objects.all(),'u':users})
+
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def reply(request,id):
     text=str(request.POST.get('reply'))
-    print('sample text ',text)
+    
     if text !="" and  text.split()!=[]:
-        rep=Reply(comment=Comment.objects.get(id=id),user=User.objects.get(id=(id+94)),comments=text)
+        reply=Reply(comment=Comment.objects.get(id=id),user=User.objects.get(id=(id+94)),comments=text)
         #reason for id+94-->user table id starts with 95
 
-        rep.save()
-        print('saved')
+        reply.save()
+        
     return HttpResponseRedirect(reverse('chat'))
 
 @csrf_exempt
 @login_required(login_url='/accounts/login/')
 def comment(request):
-    print('welcome')
-    
-    
     receiver=int(request.POST.get('menu'))
-    print(receiver)
     text=request.POST.get('comment')
     if text !="" and  text.split()!=[]:
-        
-        com=Comment(user=User.objects.get(id=int(request.user.id)),comment=request.POST.get('comment'),receiver=receiver)
-
-        com.save()
-        print('saved')
+        comments=Comment(user=User.objects.get(id=int(request.user.id)),comment=request.POST.get('comment'),receiver=receiver)
+        comments.save()
     return HttpResponseRedirect(reverse('chat'))
 
 def passwordreset(request):
@@ -144,7 +141,7 @@ def passwordreset(request):
                 new_password = 'Christmas'+rand
                 d.set_password(new_password)
                 d.save()
-                
+                print(new_password)
                 
                 #Sending email for password reset
                 try:
@@ -157,6 +154,7 @@ def passwordreset(request):
     
     return render(request, "registration/passwordreset.html", {'form': form})
 
+@login_required(login_url='/accounts/login/')
 def viewTasks(request):
 
     comments=Comment.objects.filter(receiver=request.user.id)

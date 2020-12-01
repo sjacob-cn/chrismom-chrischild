@@ -147,9 +147,8 @@ LOGOUT_REDIRECT_URL = "dashboard"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'sellapandi_jacob@condenast.com'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Condenast Team <noreply@condenast.com>'
-SERVER_EMAIL = 'sellapandi_jacob@condenast.com'

@@ -76,47 +76,43 @@ aside {
 </header>
 
     {% if user.is_authenticated %}
-        <title>Game</title>
+        <title>Game Dashboard</title>
         <br><br><br>
 
     {% if userprofile.is_child_assigned %}
     <section>
         <nav>
-        
-        
-    <p style="float: center">Your Random Child is</p>
+            <p style="float: center">Your Random Child is</p>
 
-    {% for each in u %}
-        {% if each.id == userprofile.child_id %}
-            <strong>{{each.first_name}}</strong>
+                {% for each in u %}
+                    {% if each.id == userprofile.child_id %}
+                        <strong>{{each.first_name}}</strong>
         
-            {% load staticfiles%}
+                        {% load staticfiles%}
    
-                   <img src="{% static 'user/'|add:each.first_name|add:'.jpg' %}" width="150" height="150" style="float: left">
+                            <img src="{% static 'user/'|add:each.first_name|add:'.jpg' %}" width="150" height="150" style="float: left">
                 
-        {% endif %}
-    {% endfor %}
+                    {% endif %}
+                {% endfor %}
 
-
-    <br>
-    <br>
+<br><br>
     
-    {% for each in UserProfile %}
-        {% if each.id == userprofile.child_id %}
-            <strong>{{each.team_name}}</strong>
+                {% for each in UserProfile %}
+                    {% if each.id == userprofile.child_id %}
+                        <strong>{{each.team_name}}</strong>
             
-        {% endif %}
-    {% endfor %}
+                    {% endif %}
+                {% endfor %}
 
     {% else %}
     
-{% csrf_token %} 
-<form action ={% url 'allocateChild' user.id %} method='GET'>
-{% csrf_token %} 
-<input type="submit" value='Get Random Child'>
-</form>
-{% endif %}
-</nav>
+        {% csrf_token %} 
+        <form action ={% url 'allocateChild' user.id %} method='GET'>
+            {% csrf_token %} 
+            <input type="submit" value='Get Random Child'>
+        </form>
+        {% endif %}
+        </nav>
 <article>
     
     {% load staticfiles%}
@@ -126,22 +122,14 @@ aside {
     The name of all the participants will be written on a different piece of paper and would be mixed up. Each one of them would be asked to pick up one. The person who took the paper is the Chris Mom for the person, whose name was written on the piece of paper taken. Till the end, no one would disclose the name they got. From the following day, it’s the duty of Chris Mom to take care of the Chris Child, either by giving tasks or by sharing gifts. Sometimes, the tasks would be funny and it will make the game quite hilarious. 
     
     This game would be played for a few days until Christmas Eve. And in the end, the suspense would be broken to the child by announcing who the Mom is. After disclosing the secret, the Chris Mom would give the Chris Child a memorable gift.
-</p></article>
+</p>
+</article>
+
 </section>
          
 
 {% else %}
 <a href="{% url 'login' %}">Login</a>
-{% endif %}
-    
-
-
-
-
-
-  
-   
-   
-  
+{% endif %}  
   {% endblock %}
 
